@@ -25,16 +25,17 @@ void read_file_text(char *palavra, char *texto){
 
     strcat(texto, "\0");
 
-    printf("%s\n", texto);
+    //printf("%s\n", texto);
 }
 
 int read_file_pattern(char *padrao, int max){
-    char *x;
-    x = fgets(padrao, max, fileInput2);
+    int x;
+    strcpy(padrao, "\0");
 
-    if(x) return 1;
-    else return 0;
+    x = fscanf(fileInput2, "%s", padrao);
 
+    if(x != EOF) return 1;
+    else return 0;        
 }
 
 void close_file(){
