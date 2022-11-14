@@ -3,6 +3,7 @@
 #include <string.h>
 #include "file.h"
 #include "shiftand.h"
+#include "dinamica.h"
 
 #define MAX_TEXTO 5000
 #define MAX_PALAVRA 50
@@ -16,15 +17,15 @@ void main(int argc, char *argv[]){ //./tp3 2 texto.txt padrao.txt
     char *texto = malloc(MAX_TEXTO * sizeof(char)); //Texto maximo suportado: 2250 caracteres
     char *padrao = malloc(MAX_PADRAO * sizeof(char)); //Maior padrao a ser buscado: 30 caracteres
 
-    read_file_text(palavra, texto);
+    if (escolha == 2) read_file_text(palavra, texto);
     
     printf("Qual a quantidade de erros permitidos? ");
     scanf("%d", &erros);
     
     int i = 0;
-    while(read_file_pattern(padrao, MAX_PADRAO)){
+    while(read_file_pattern(padrao)){
         if(escolha == 1){
-            printf("a");
+            dinamica(texto, padrao, erros);
         } else if (escolha == 2){
             ShiftAndAproximado(texto, strlen(texto), padrao, strlen(padrao), erros);
         }
