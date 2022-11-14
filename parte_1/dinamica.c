@@ -3,17 +3,27 @@
 #include "dinamica.h"
 #include "file.h"
 
-void dinamica(char *texto, char *padrao, int erros){
+void dinamica(char *texto, char *padrao, int erros, int *posicao){
+    *posicao = 1;
+    int x = 0;
+
     while(read_file_text2(texto)){
-        printf("padrao: %s     ", padrao);
-        printf("texto: %s\n", texto);
         
+        if(x < 1) {
+            printf("%s", padrao);
+            x++;
+        }
+        //printf("texto: %s\n", texto);
+            
         int x;
         x = levenshtein(texto, padrao);
 
-        if(x <= erros) printf("casou\n");
-        else printf("nao casou\n");
+        if(x <= erros) {
+            printf("%3d", *posicao);
+        }
+        *posicao += strlen(texto);
     }
+    printf("\n");
 }
 
 int min(int a, int b, int c){	

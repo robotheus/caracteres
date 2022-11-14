@@ -25,7 +25,9 @@ void main(int argc, char *argv[]){ //./tp3 2 texto.txt padrao.txt
     int i = 0;
     while(read_file_pattern(padrao)){
         if(escolha == 1){
-            dinamica(texto, padrao, erros);
+            int *posicao;
+            posicao = malloc(sizeof(int));
+            dinamica(texto, padrao, erros, posicao);
         } else if (escolha == 2){
             ShiftAndAproximado(texto, strlen(texto), padrao, strlen(padrao), erros);
         }
