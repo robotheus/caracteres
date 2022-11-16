@@ -4,7 +4,7 @@
 #include "file.h"
 
 void dinamica(char *texto, char *padrao, int erros, int *posicao){
-    int x = 0, y = 0;
+    int x = 0;
 
     while(read_file_text2(texto, posicao)){
         
@@ -12,15 +12,22 @@ void dinamica(char *texto, char *padrao, int erros, int *posicao){
             printf("%s", padrao);
             x++;
         }
-
+            
+        int y;
         y = levenshtein(texto, padrao);
 
         if(y <= erros) {
-            printf("%3d", (*posicao));
+            printf("%3d", *posicao);
         }
-        *posicao += strlen(texto);
+        (*posicao) += strlen(texto);
     }
     printf("\n");
+}
+
+int min(int a, int b, int c){	
+	if(a <= b && a <= c) return a;
+	else if(b <= a && b <= c) return b;
+	else if(c <= a && c <= b) return c;
 }
 
 int levenshtein(char *s1, char *s2){
@@ -40,10 +47,4 @@ int levenshtein(char *s1, char *s2){
     }
     
     return(matrix[s2len][s1len]);
-}
-
-int min(int a, int b, int c){	
-	if(a <= b && a <= c) return a;
-	else if(b <= a && b <= c) return b;
-	else if(c <= a && c <= b) return c;
 }

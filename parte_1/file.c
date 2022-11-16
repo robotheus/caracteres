@@ -28,19 +28,24 @@ void read_file_text(char *palavra, char *texto){
     //printf("%s\n", texto);
 }
 
-int read_file_text2(char *texto){
+int read_file_text2(char *texto, int *posicao){
     int y;
     strcpy(texto, "\0");
-    
+    (*posicao)++; //referente ao espaço
+
     y = fscanf(fileInput1, "%s", texto);
-    //if(texto[strlen(texto)-1] == ',' || texto[strlen(texto)-1] == '.') texto[strlen(texto)-1] = 0;
     
+    //printf("texto: %s\t\t padrao: %c\n", texto, texto[strlen(texto)-1]);
+    if(texto[strlen(texto) - 1] == ',' || texto[strlen(texto) - 1] == '.') {
+        texto[strlen(texto) - 1] = 0;
+        (*posicao)++; //referente ao ponto ou virgula
+    }
+
     if(y != EOF) return 1;
     else {
         rewind(fileInput1);
         return 0;
     }
-    //printf("%s\n", texto);
 }
 
 int read_file_pattern(char *padrao){
