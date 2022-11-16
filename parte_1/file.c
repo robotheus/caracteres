@@ -25,23 +25,22 @@ void read_file_text(char *palavra, char *texto){
     }
 
     strcat(texto, "\0");
-
-    printf("%s\n", texto);
+    //printf("%s\n", texto);
 }
 
-int read_file_text2(char *texto, int *posicao){
+int read_file_text2(char *texto){
     int y;
     strcpy(texto, "\0");
     
     y = fscanf(fileInput1, "%s", texto);
-    if(acentuacao(texto))(*posicao)++;//só itera se nao tiver ascento na palavra isso é feito para controlar as posicoes do texto
     //if(texto[strlen(texto)-1] == ',' || texto[strlen(texto)-1] == '.') texto[strlen(texto)-1] = 0;
+    
     if(y != EOF) return 1;
     else {
         rewind(fileInput1);
         return 0;
     }
-    printf("%s\n", texto);
+    //printf("%s\n", texto);
 }
 
 int read_file_pattern(char *padrao){
@@ -60,12 +59,6 @@ void close_file(){
     fclose(fileOutput);
 }
 
-int acentuacao(char *texto){
-    for(int i = 0; i < strlen(texto); i++){
-        if(/*texto[i] == '´' ||*/ texto[i] == '`' || texto[i] == '^' || texto[i] == '~') return 0;
-        else return 1;
-    }
-}
 /*void output(int habilidade){
     fprintf(fileOutput, "%d ", habilidade);
 }*/
