@@ -13,4 +13,4 @@ tp3_p2: main.o file.o bmh.o
 	gcc main.o file.o bmh.o -o tp3_p2
 
 clean:
-	rm -rf main.o file.o bmh.o saida.txt tp3
+	rm -rf main.o file.o bmh.o saida.txt tp3_p2
