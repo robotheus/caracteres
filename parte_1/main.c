@@ -1,40 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "file.h"
-#include "shiftand.h"
+#include "estrutura.h"
+#include "heuristica.h"
 #include "dinamica.h"
 
-#define MAX_TEXTO 5000
-#define MAX_PALAVRA 50
-#define MAX_PADRAO 50
+void main(int argc, char *argv[]){
+    open_file(argv[2], argv[4]);
 
-void main(int argc, char *argv[]){ //./tp3 2 texto.txt padrao.txt
-    open_file(argv[2], argv[3]);
-
-    int escolha = atoi(argv[1]), erros;
-    char *palavra = malloc(MAX_PALAVRA * sizeof(char)); //Maior palavra do texto: 30 caracteres
-    char *texto = malloc(MAX_TEXTO * sizeof(char)); //Texto maximo suportado: 2250 caracteres
-    char *padrao = malloc(MAX_PADRAO * sizeof(char)); //Maior padrao a ser buscado: 30 caracteres
-
-    if (escolha == 2) read_file_text(palavra, texto);
+    int instancias = read_file(), **matriz, qtdpovos, distancia, peso, qtdcaminhos;
+    Povo *povos, *copia_p;
     
-    printf("Qual a quantidade de erros permitidos? ");
-    scanf("%d", &erros);
-    
-    int i = 0;
-    while(read_file_pattern(padrao)){
-        if(escolha == 1){
-            int *posicao;
-            posicao = malloc(sizeof(int));
-            dinamica(texto, padrao, erros, posicao);
-        } else if (escolha == 2){
-            ShiftAndAproximado(texto, strlen(texto), padrao, strlen(padrao), erros);
-        }
+    for (int i = 0; i < instancias; i++){
+        qtdpovos = read_file();
+        distancia = read_file();
+        peso = read_file();
+        qtdcaminhos = read_file();
+
+        matriz = (int**) malloc(qtdpovos * sizeof(int*));
+        povos = malloc(qtdpovos * sizeof(Povo));
+        copia_p = malloc(qtdpovos * sizeof(Povo));
+
+        monta_estrutura(matriz, povos, qtdpovos, qtdcaminhos);
+        copia_povos(copia_p, povos, qtdpovos);
+        dinamica(matriz, povos, qtdpovos, distancia, peso);
+        //heuristica(copia_p, matriz, peso, distancia, qtdpovos);
+        limpa_estrutura(qtdpovos, matriz, povos, copia_p);
     }
-    
+
     close_file();
-    free(palavra);
-    free(texto);
-    free(padrao);
 }

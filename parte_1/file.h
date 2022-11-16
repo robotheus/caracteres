@@ -1,6 +1,6 @@
 void open_file(char [], char []);
-void read_file_text(char *, char *);
-int read_file_text2(char *);
-int read_file_pattern(char *);
+int read_file();
 void close_file();
-//void output(int);
+void output1(int);
+void output2(int, int);
+void output3();

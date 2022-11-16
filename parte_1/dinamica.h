@@ -1,3 +1,9 @@
-void dinamica(char *, char *, int, int *);
-int levenshtein(char *, char *);
-int min(int, int, int);
+struct solucao {
+    int item;
+    struct solucao *next;
+};
+
+typedef struct solucao Solucao;
+
+void dinamica(int **, Povo *, int, int, int);
+int max(Povo *povo, int **tabela, int i, int j);
