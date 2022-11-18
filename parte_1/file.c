@@ -28,14 +28,14 @@ void read_file_text(char *palavra, char *texto){
     //printf("%s\n", texto);
 }
 
-int read_file_text2(char *texto, int *posicao){
+int read_file_text2(char *texto, int *posicao, int *inicio){
     int y;
     strcpy(texto, "\0");
     (*posicao)++; //referente ao espaço
 
     y = fscanf(fileInput1, "%s", texto);
-    
-    //printf("texto: %s\t\t padrao: %c\n", texto, texto[strlen(texto)-1]);
+    *inicio = *posicao;
+
     if(texto[strlen(texto) - 1] == ',' || texto[strlen(texto) - 1] == '.') {
         texto[strlen(texto) - 1] = 0;
         (*posicao)++; //referente ao ponto ou virgula

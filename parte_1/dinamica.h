@@ -1,3 +1,3 @@
-void dinamica(char *, char *, int, int *);
+void dinamica(char *, char *, int, int *, int *);
 int levenshtein(char *, char *);
 int min(int, int, int);
