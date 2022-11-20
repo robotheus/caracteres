@@ -3,4 +3,4 @@ void read_file_text(char *, char *);
 int read_file_text2(char *, int *, int *);
 int read_file_pattern(char *);
 void close_file();
-//void output(int);
+void output(char);

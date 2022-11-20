@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 #include "file.h"
 
 FILE *fileInput1, *fileInput2, *fileOutput;
@@ -34,9 +35,23 @@ int read_file_text2(char *texto, int *posicao, int *inicio){
     (*posicao)++; //referente ao espaço
 
     y = fscanf(fileInput1, "%s", texto);
+    for(int i = 0; i < strlen(texto); i++){
+        //printf("%d %c\n", texto[i], texto[i]);
+    }
     *inicio = *posicao;
 
-    if(texto[strlen(texto) - 1] == ',' || texto[strlen(texto) - 1] == '.') {
+    int caractere = 0;
+    for (int j = 0; j < strlen(texto); j++) {
+        caractere = texto[j];
+        if (caractere < 0) {
+            (*posicao)--;
+            break;
+        }
+    }
+
+    caractere = texto[strlen(texto) - 1];
+
+    if(caractere >= 33 && caractere <= 47) {
         texto[strlen(texto) - 1] = 0;
         (*posicao)++; //referente ao ponto ou virgula
     }
@@ -64,6 +79,6 @@ void close_file(){
     fclose(fileOutput);
 }
 
-/*void output(int habilidade){
-    fprintf(fileOutput, "%d ", habilidade);
-}*/
+void output(char c){
+    fprintf(fileOutput, "%c\n", c);
+}

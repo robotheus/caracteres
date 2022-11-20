@@ -6,8 +6,9 @@
 void dinamica(char *texto, char *padrao, int erros, int *posicao, int *inicio){
     int x = 0;
 
+    
+
     while(read_file_text2(texto, posicao, inicio)){
-        
         if(x < 1) {
             printf("%s", padrao);
             x++;
@@ -17,7 +18,7 @@ void dinamica(char *texto, char *padrao, int erros, int *posicao, int *inicio){
         y = levenshtein(texto, padrao);
 
         if(y <= erros) {
-            printf("%3d", *inicio);
+            printf("%10d", *inicio);
         }
 
         (*posicao) += strlen(texto);
