@@ -1,23 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+#include "bmh_compressao.h"
 
-#define BaseNum 128
-#define MaxAlfabeto 255
-#define MaxTamVetoresBO 10
-#define TRUE 1
-#define FALSE 0
-
-typedef short TipoAlfabeto[MaxAlfabeto + 1];
-
-typedef struct TipoBaseOfSet{
-    int Base, Offset;
-} TipoBaseOfSet;
-
-typedef TipoBaseOfSet TipoVetoersBO[MaxTamVetoresBO + 1];
-typedef char TipoPalavra[256];
-typedef TipoPalavra TipoVetorPalavra[M + 1];
-
-int main(int argc, char *argv[]){
+void bmh_compressao(){
     FILE *Ar1Txt = NULL;
     FILE *ArqAlf = NULL;
     FILE *ArqComprimido = NULL;
@@ -61,8 +46,6 @@ int main(int argc, char *argv[]){
         fclose(ArqComprimido);
         ArqComprimido = NULL;
     }
-
-    return 0;
 }
 
 void Compressao(FILE *ArqTxt, FILE *ArqAlf, FILE *ArqComprimido){
@@ -71,6 +54,7 @@ void Compressao(FILE *ArqTxt, FILE *ArqAlf, FILE *ArqComprimido){
     int Ind = 1;
     int MaxCompCod;
 
+    TipoDicionario Vocabulario;
     TipoPesos p;
     TipoVetoresBO VetoresBaseOffset;
 
@@ -89,4 +73,24 @@ void Compressao(FILE *ArqTxt, FILE *ArqAlf, FILE *ArqComprimido){
     TerceiraEtapa(ArqTxt, Alfabeto, &Ind, Palavra, Linha, Vocabulario, p, VetoresBaseOffset, ArqComprimido, MaxCompCod);
 }
 
-DefineAlfabeto();
+void DefineAlfabeto(TipoAlfabeto Alfabeto, FILE *ArqAlf){
+    char Simbolos[MaxAlfabeto + 1];
+    int i;
+    char *Temp;
+
+    for(int i = 0; i <= MaxAlfabeto; i++) Alfabeto[i] = FALSE;
+    fgets(Simbolos, MaxAlfabeto + 1, ArqAlf);
+    
+    Temp = strchr(Simbolos, '\n');
+    if(Temp != NULL) *Temp = 0;
+    
+    for(i = 0; i <= strlen(Simbolos)-1; i++){
+        Alfabeto[Simbolos[i]+127] = TRUE;
+        Alfabeto[0] = FALSE;
+    }
+}
+
+void Inicializa(TipoDicionario T){
+    for(int i = 0; i < M; i++) memcpy(T[i].Chave, Vazio, n);
+}
+
