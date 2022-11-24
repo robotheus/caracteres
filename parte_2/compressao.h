@@ -13,12 +13,16 @@
 #define Retirado "**********"
 
 typedef unsigned int Apontador;
+typedef unsigned int TipoFreq;
+typedef unsigned int TipoOrdem;
 typedef unsigned char TipoChave[n];
 typedef unsigned TipoPesos[n];
 typedef unsigned int Indice;
 
 typedef struct TipoItem{
     TipoChave Chave;
+    TipoFreq Freq;
+    TipoOrdem Ordem;
 } TipoItem;
 
 typedef TipoItem TipoDicionario[M];
