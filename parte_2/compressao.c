@@ -2,6 +2,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <stdlib.h>
+#include <publib.h>
 #include "compressao.h"
 #include "bmh.h"
 
@@ -263,6 +264,7 @@ void TerceiraEtapa(FILE *ArqTxt, TipoAlfabeto Alfabeto, int *Indice, TipoPalavra
             do {
                 ExtraiProximaPalavra(Palavra, Indice, Linha, ArqTxt, Alfabeto);
 
+                
                 if(strcmp(Trim(Palavra), "") && /*here->*/(*Trim(Palavra)) != (char)0){
                     memcpy(Chave, Palavra, sizeof(TipoChave));
                     Pos = Pesquisa(Chave, p, Vocabulario);

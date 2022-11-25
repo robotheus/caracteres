@@ -67,6 +67,6 @@ Indice OrdenaPorFrequencia(TipoDicionario);
 void Escreve(FILE *, int *, int *);
 int LeVetores(FILE *, TipoBaseOfSet *);
 void ExtraiProximaPalavra(TipoPalavra, int *, char *, FILE *, TipoAlfabeto);
-void Busca(FILE *, FILE *);
+void Busca(FILE *, FILE *ArqAlf);
 void Atribui(TipoPadrao, int, int);
 int LeVocabulario(FILE *, TipoVetorPalavra);
