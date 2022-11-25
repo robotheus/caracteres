@@ -245,3 +245,95 @@ int SegundaEtapa(TipoDicionario Vocabulario, TipoVetoresBO VetoresBaseOffset, Ti
 
     return Result;
 }
+
+void TerceiraEtapa(FILE *ArqTxt, TipoAlfabeto Alfabeto, int *Indice, TipoPalavra Palavra, char *Linha, TipoDicionario Vocabulario, TipoPesos p, TipoVetoresBO VetoresBaseOffset, FILE *ArqComprimido, int MaxCompCod) {
+    Apontador Pos;
+    TipoChave Chave;
+    int Codigo, c;
+
+    do{
+        ExtraiProximaPalavra(Palavra, Indice, Linha, ArqTxt, Alfabeto);
+        memcpy(Chave, Palavra, sizeof(TipoChave));
+        if(*Palavra != '\0'){
+            Pos = Pesquisa(Chave, p,  Vocabulario);
+            Codigo = Codifica(VetoresBaseOffset, Vocabulario[Pos].Ordem, &c, MaxCompCod);
+            Escreve(ArqComprimido, &Codigo, &c);
+
+            do {
+                ExtraiProximaPalavra(Palavra, Indice, Linha, ArqTxt, Alfabeto);
+
+                if(strcmp(Trim(Palavra), "") && (*Trim(Palavra)) != (char)0){
+                    memcpy(Chave, Palavra, sizeof(TipoChave));
+                    Pos = Pesquisa(Chave, p, Vocabulario);
+                    Codigo = Codifica(VetoresBaseOffset, Vocabulario[Pos].Ordem, &c, MaxCompCod);
+                    Escreve(ArqComprimido, &Codigo, &c);
+                }
+            } while (strcmp(Palavra, ""));
+        }
+    } while (*Palavra != '\0');
+}
+
+void CalculaCompCodigo(TipoDicionario A, int y){
+    int u = 0, h = 0, NoInt, Prox, Raiz, Folha, Disp = 1, x, Resto;
+
+    if(y > BaseNum - 1) Resto = 1 + ((y - BaseNum) % (BaseNum - 1));
+    else Resto = y - 1;
+
+    NoInt = 1 + ((n - Resto) / (BaseNum - 1));
+
+    if(Resto < 2) Resto = BaseNum;
+    for(x = y - 1; x >= (n - Resto) + 1; x--) A[n].Freq += A[x].Freq;
+
+    Raiz = n;
+    Folha = n - Resto;
+
+    for(Prox = n - 1; Prox >= (n - NoInt) + 1; Prox--){
+        if(Folha < 1 || Raiz > Prox && A[Raiz].Freq <= A[Folha].Freq){
+            A[Prox].Freq = A[Raiz].Freq; 
+            A[Raiz].Freq = Prox;
+            Raiz--;
+        } else{
+            A[Prox].Freq = A[Folha].Freq;
+            Folha--;
+        }
+
+        for(x = 1; x <= BaseNum - 1; x++){
+            if(Folha < 1 || Raiz > Prox && A[Raiz].Freq <= A[Folha].Freq){
+                A[Prox].Freq += A[Raiz].Freq;
+                A[Raiz].Freq = Prox;
+                Raiz--;
+            } else {
+                A[Prox].Freq += A[Folha].Freq;
+                Folha--;
+            }
+        }
+    }
+
+    A[Prox + 1].Freq = 0; Raiz = Prox + 1;
+    for(Prox = Raiz + 1; Prox <= y; Prox++) A[Prox].Freq = A[A[Prox].Freq].Freq + 1;
+
+    Prox = 1;
+
+    while (Disp > 0){
+        while(Raiz <= y && A[Raiz].Freq == h) {
+            u++;
+            Raiz++;
+        }
+
+        while(Disp > u) {
+            A[Prox].Freq = h;
+            Prox++;
+            Disp--;
+
+            if(Prox > y){
+                u = 0;
+                break;
+            }
+        }
+
+        Disp = BaseNum * u;
+        h++;
+        u = 0;
+    }
+    
+}
