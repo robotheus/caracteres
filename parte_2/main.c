@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "file.h"
-#include "bmh1.h"
+#include "bmh.h"
 
 #define MAX_TEXTO 5000
 #define MAX_PALAVRA 50

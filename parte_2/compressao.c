@@ -3,6 +3,7 @@
 #include <sys/time.h>
 #include <stdlib.h>
 #include "compressao.h"
+#include "bmh.h"
 
 void bmh_compressao(){
     FILE *ArqTxt = NULL;
@@ -192,7 +193,7 @@ void PrimeiraEtapa(FILE *ArqTxt, TipoAlfabeto Alfabeto, int *Indice, TipoPalavra
                 ExtraiProximaPalavra(Palavra, Indice, Linha, ArqTxt, Alfabeto);
                 memcpy(Elemento.Chave, Palavra, sizeof(TipoChave));
 
-                if(strcmp(Trim(Palavra), "") && (*Trim(Palavra)) != (char)0){
+                if(strcmp(Trim(Palavra), "") && /*here->*/(*Trim(Palavra)) != (char)0){
                     i = Pesquisa(Elemento.Chave, p, Vocabulario);
                     if(i < M) Vocabulario[i].Freq;
                     else Insere(Elemento, p, Vocabulario);
@@ -262,7 +263,7 @@ void TerceiraEtapa(FILE *ArqTxt, TipoAlfabeto Alfabeto, int *Indice, TipoPalavra
             do {
                 ExtraiProximaPalavra(Palavra, Indice, Linha, ArqTxt, Alfabeto);
 
-                if(strcmp(Trim(Palavra), "") && (*Trim(Palavra)) != (char)0){
+                if(strcmp(Trim(Palavra), "") && /*here->*/(*Trim(Palavra)) != (char)0){
                     memcpy(Chave, Palavra, sizeof(TipoChave));
                     Pos = Pesquisa(Chave, p, Vocabulario);
                     Codigo = Codifica(VetoresBaseOffset, Vocabulario[Pos].Ordem, &c, MaxCompCod);
@@ -335,5 +336,199 @@ void CalculaCompCodigo(TipoDicionario A, int y){
         h++;
         u = 0;
     }
+}
+
+int Codifica(TipoVetoresBO VetoresBaseOffSet, int Ordem, int *c, int MaxCompCod){
+    *c = 1;
+
+    while(Ordem >= VetoresBaseOffSet[*c + 1].Offset && *c + 1<= MaxCompCod) (*c)++;
+
+    return (Ordem - VetoresBaseOffSet[*c].Offset + VetoresBaseOffSet[*c].Base);
+}
+
+int ConstroiVetores(TipoVetoresBO VetoresBaseOffset, TipoDicionario Vocabulario, int x, FILE *ArqComprimido){
+    int Wcs[MaxTamVetoresBO + 1];
+    int i, MaxCompCod;
+    MaxCompCod = Vocabulario[x].Freq;
+
+    for(i = 1; i <= x; i++){
+        Wcs[Vocabulario[i].Freq]++;
+        VetoresBaseOffset[Vocabulario[i].Freq].Offset = i - Wcs[Vocabulario[i].Freq] + 1;
+    }
+
+    VetoresBaseOffset[1].Base = 0;
+
+    for(i = 2; i <= MaxCompCod; i++){
+        VetoresBaseOffset[i].Base = BaseNum * (VetoresBaseOffset[i - 1].Base + Wcs[i - 1]);
+        if(VetoresBaseOffset[i].Offset == 0) VetoresBaseOffset[i].Offset = VetoresBaseOffset[i - 1].Offset;
+    }
+
+    GravaNumInt(ArqComprimido, MaxCompCod);
+    for(i = 1; i <= MaxCompCod; i++){
+        GravaNumInt(ArqComprimido, VetoresBaseOffset[i].Base);
+        GravaNumInt(ArqComprimido, VetoresBaseOffset[i].Offset);
+    }
+
+    return MaxCompCod;
+}
+
+int LeNumInt(FILE *ArqComprimido){
+    int Num;
+    fread(&Num, sizeof(int), 1, ArqComprimido);
+    return Num;
+}
+
+void GravaNumInt(FILE *ArqComprimido, int Num){
+    fwrite(&Num, sizeof(int), 1, ArqComprimido);
+}
+
+Indice OrdenaPorFrequencia(TipoDicionario Vocabulario){
+    Indice i;
+    Indice x = 1;
+    TipoItem Item;
+
+    Item = Vocabulario[1];
+
+    for(i = 0; i <= M - 1; i++){
+        if(strcmp(Vocabulario[i].Chave, Vazio)){
+            if(i != 1) {
+                Vocabulario[x] = Vocabulario[i];
+                x++;
+            }
+        }
+    }
+
+    if(strcmp(Item.Chave, Vazio)) Vocabulario[x] = Item;
+    else x--;
+
+    QuickSort(Vocabulario, &x);
+    return x;
+}
+
+void Escreve(FILE *ArqComprimido, int *Codigo, int *c){
+    unsigned char Saida[MaxTamVetoresBO + 1];
+    int i = 1, cTmp;
+    cTmp = *c;
     
+    Saida[i] = ((unsigned)(*Codigo)) >> ((*c - 1) * 8 - *c + 1) | 0x80;
+    i++;
+    (*c)--;
+
+    while(*c > 0){
+        Saida[i] = ((unsigned)(*Codigo)) >> ((*c - 1) * 8 - *c + 1);
+        i++;
+        (*c)--;
+    }
+
+    for(i = 1; i <= cTmp; i++) fwrite(&Saida[i], sizeof(unsigned char), 1, ArqComprimido);
+}
+
+int LeVetores(FILE *ArqComprimido, TipoBaseOfSet *VetoresBaseOffset){
+    int MaxCompCod, i;
+    MaxCompCod = LeNumInt(ArqComprimido);
+
+    for(i = 1; i <= MaxCompCod; i++){
+        VetoresBaseOffset[i].Base = LeNumInt(ArqComprimido);
+        VetoresBaseOffset[i].Offset = LeNumInt(ArqComprimido);
+    }
+
+    return MaxCompCod;
+}
+
+void ExtraiProximaPalavra(TipoPalavra Result, int *Indice, char *Linha, FILE *ArqTxt, TipoAlfabeto Alfabeto){
+    short FimPalavra = FALSE, Aux = FALSE;
+    Result[0] = '\0';
+
+    if(*Indice > strlen(Linha)){
+        if(fgets(Linha, MaxAlfabeto + 1, ArqTxt)){
+            sprintf(Linha + strlen(Linha), " %c", (char)0);
+            *Indice = 1;
+        } else{
+            sprintf(Linha, " %c", (char)0);
+            FimPalavra = TRUE;
+        }
+    }
+
+    while(*Indice <= strlen(Linha) && !FimPalavra){
+        if(Alfabeto[Linha[*Indice - 1] + 127]){
+            sprintf(Result + strlen(Result), " %c", Linha[*Indice - 1]);
+            Aux = TRUE;
+        } else {
+            if(Aux){
+                if(Linha[*Indice - 1] != (char)0) (*Indice)--;
+            } else {
+                sprintf(Result + strlen(Result), " %c", Linha[*Indice - 1]);
+            }
+
+            FimPalavra = TRUE;
+        }
+        (*Indice)++;
+    }
+}
+
+void Busca(FILE *ArqComprimido, FILE *ArqAlf){
+    TipoAlfabeto Alfabeto;
+    int Ind, Codigo, MaxCompCod;
+    TipoVetorPalavra Vocabulario;
+    TipoVetoresBO VetoresBaseOffset;
+    TipoPalavra p;
+
+    int c, Ord, NumNodosFolhas;
+    TipoTexto T;
+    TipoPadrao Padrao;
+    int x = 1;
+
+    DefineAlfabeto(Alfabeto, ArqAlf);
+    MaxCompCod = LeVetores(ArqComprimido, VetoresBaseOffset);
+    NumNodosFolhas = LeVocabulario(ArqComprimido, Vocabulario);
+
+    while(fread(&T[x], sizeof(char), 1, ArqComprimido)) x++;
+
+    do {
+        printf("Padrao: ");
+        fgets(p, MaxAlfabeto + 1, stdin);
+        p[strlen(p) - 1] = '\0';
+
+        for(Ind = 1; Ind <= NumNodosFolhas; Ind++){
+            if(!strcmp(Vocabulario[Ind], p)) Ord = Ind;
+        }
+
+        Codigo = Codifica(VetoresBaseOffset, Ord, &c, MaxCompCod);
+        Atribui(Padrao, Codigo, c);
+        BMH(T, x, Padrao, c);
+    } while (strcmp(p, "s"));
+}
+
+void Atribui(TipoPadrao P, int Codigo, int c){
+    int i = 1, cTmp = c;
+    P[i] = (char)((Codigo >> ((c-1) * 8 - c + 1)) | 0x80);
+    i++;
+    c--;
+
+    while(c > 0){
+        P[i] = (char)(Codigo >> ((c-1) * 8 - c + 1));
+        i++;
+        c--;
+    }
+}
+
+int LeVocabulario(FILE *ArqComprimido, TipoVetorPalavra Vocabulario){
+    int NumNodosFolhas, i;
+    TipoPalavra Palavra;
+
+    char Ch;
+    NumNodosFolhas = LeNumInt(ArqComprimido);
+
+    for(i = 1; i <= NumNodosFolhas; i++){
+        *Palavra = '\0';
+
+        do{
+            fread(&Ch, sizeof(unsigned char), 1, ArqComprimido);
+
+            if(Ch != (char)0) sprintf(Palavra + strlen(Palavra), " %c", Ch);
+        } while (Ch != (char)0);
+
+        strcpy(Vocabulario[i], Palavra);
+    }
+    return NumNodosFolhas;
 }

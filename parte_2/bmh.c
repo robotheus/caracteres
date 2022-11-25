@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "bmh.h"
 
 void BMH(char *texto, long n, char *padrao, long m){ 
     long i, j, k, d[256 + 1];
