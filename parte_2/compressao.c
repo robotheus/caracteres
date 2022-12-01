@@ -2,6 +2,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "compressao.h"
 #include "bmh.h"
 
@@ -84,17 +85,18 @@ void Compressao(FILE *ArqTxt, FILE *ArqAlf, FILE *ArqComprimido){
 void DefineAlfabeto(TipoAlfabeto Alfabeto, FILE *ArqAlf){
     char Simbolos[MaxAlfabeto + 1];
     char *Temp;
-
-    for(int i = 0; i <= MaxAlfabeto; i++) Alfabeto[i] = FALSE;
+    int i;
+    for(i = 0; i <= MaxAlfabeto; i++) Alfabeto[i] = FALSE;
     fgets(Simbolos, MaxAlfabeto + 1, ArqAlf);
     
     Temp = strchr(Simbolos, '\n');
     if(Temp != NULL) *Temp = 0;
     
-    for(int i = 0; i <= strlen(Simbolos)-1; i++){
+    for(i = 0; i <= strlen(Simbolos)-1; i++){
         Alfabeto[Simbolos[i]+127] = TRUE;
-        Alfabeto[0] = FALSE;
     }
+    
+    Alfabeto[0] = FALSE;
 }
 
 void GeraPesos(TipoPesos p){
@@ -474,13 +476,13 @@ void ExtraiProximaPalavra(TipoPalavra Result, int *Indice, char *Linha, FILE *Ar
 }
 
 void Busca(FILE *ArqComprimido, FILE *ArqAlf){
-    
+    printf("----------->HERE<-----------\n");
     TipoAlfabeto Alfabeto;
     int Ind, Codigo, MaxCompCod;
     TipoVetorPalavra Vocabulario;
     TipoVetoresBO VetoresBaseOffset;
     TipoPalavra p;
-
+    
     int c, Ord, NumNodosFolhas;
     TipoTexto T;
     TipoPadrao Padrao;
@@ -541,25 +543,12 @@ int LeVocabulario(FILE *ArqComprimido, TipoVetorPalavra Vocabulario){
     return NumNodosFolhas;
 }
 
-char *Trim(char *str) {
-    int i = 0, j, len;
-    char * strtmp = malloc(sizeof(char) * strlen(str) + 1);
-    strcpy(strtmp, str);
-    len = strlen(strtmp);
-    while((i < len) && ((strtmp[i] == ' ') || (strtmp[i] == '\t') ||
-                        /*(strtmp[i] == '\n') ||*/ (strtmp[i] == '\r')))
-        i++;
-    j = len - 1;
-    while((j >= 0) && ((strtmp[j] == ' ') || (strtmp[j] == '\t') ||
-                       /*(strtmp[i] == '\n') ||*/ (strtmp[i] == '\r')))
-        j--;
+char *Trim(char *str)
+{
+    size_t len = strlen(str);
 
-    if (j >= 0) str[j + 1] = '\0';
-    if (i <= j)
-    {
-        memmove(strtmp, strtmp + i, strlen(strtmp + i)+1);
-        //strcpy(strtmp, strtmp + i);
-    }
-    else strcpy(strtmp, "");
-    return strtmp;
+    while(isspace(str[len - 1])) --len;
+    while(*str && isspace(*str)) ++str, --len;
+
+    return strndup(str, len);
 }

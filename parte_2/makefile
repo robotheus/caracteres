@@ -16,4 +16,4 @@ tp3_p2: main.o file.o bmh.o compressao.o
 	gcc main.o file.o bmh.o compressao.o -o tp3_p2 -lm
 
 clean:
-	rm -rf main.o file.o bmh.o compressao.o saida.txt tp3_p2
+	rm -rf *o saida.txt tp3_p2

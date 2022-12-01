@@ -8,7 +8,7 @@
 #define Maxchar 256
 #define NumMaxErros 10
 #define n 35
-#define M 67001
+#define M 68000
 #define Vazio "!!!!!!!!!!"
 #define Retirado "**********"
 
