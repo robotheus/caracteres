@@ -7,8 +7,8 @@
 #define MaxTamPadrao 10
 #define Maxchar 256
 #define NumMaxErros 10
-#define n 11
-#define M 7
+#define n 35
+#define M 67001
 #define Vazio "!!!!!!!!!!"
 #define Retirado "**********"
 
@@ -67,7 +67,7 @@ Indice OrdenaPorFrequencia(TipoDicionario);
 void Escreve(FILE *, int *, int *);
 int LeVetores(FILE *, TipoBaseOfSet *);
 void ExtraiProximaPalavra(TipoPalavra, int *, char *, FILE *, TipoAlfabeto);
-void Busca(FILE *, FILE *ArqAlf);
+void Busca(FILE *, FILE *);
 void Atribui(TipoPadrao, int, int);
 int LeVocabulario(FILE *, TipoVetorPalavra);
 char *Trim(char *str);
