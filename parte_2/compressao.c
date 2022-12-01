@@ -2,7 +2,6 @@
 #include <string.h>
 #include <sys/time.h>
 #include <stdlib.h>
-#include <publib.h>
 #include "compressao.h"
 #include "bmh.h"
 
@@ -146,35 +145,35 @@ void Insere(TipoItem x, TipoPesos p, TipoDicionario T){
     else printf("Tabela cheia\n");
 }
 
-void Particao(Indice Esq, Indice Dir, Indice *i, Indice *j, Item *A){
-    Item x, w;
+void Particao(Indice Esq, Indice Dir, Indice *i, Indice *j, TipoDicionario A){
+    TipoItem x, w;
     *i = Esq;
     *j = Dir;
-    x = A[(*i + *j) / 2];
-
-    do {
-        while(x.Chave > A[*i].Chave) (*i)++;
-        while(x.Chave < A[*j].Chave) (*j)--;
-
-        if(*i <= *j){
+    x = A[(*i + *j) / 2];   /* obtem o pivo x */
+    do
+    {
+        while (x.Freq < A[*i].Freq) (*i)++;
+        while (x.Freq > A[*j].Freq) (*j)--;
+        if (*i <= *j)
+        {
             w = A[*i];
             A[*i] = A[*j];
             A[*j] = w;
             (*i)++;
             (*j)--;
         }
-    } while (*i <= *j);
+    }
+    while (*i <= *j);
 }
 
-void Ordena(Indice Esq, Indice Dir, Item *A){
+void Ordena(Indice Esq, Indice Dir, TipoDicionario A){
     Indice i, j;
-
     Particao(Esq, Dir, &i, &j, A);
-    if(Esq < j) Ordena(Esq, j, A);
-    if(i < Dir) Ordena(i, Dir, A);
+    if (Esq < j) Ordena(Esq, j, A);
+    if (i < Dir) Ordena(i, Dir, A);
 }
 
-void QuickSort(Item *A, Indice *x){
+void QuickSort(TipoDicionario A, Indice *x){
     Ordena(1, *x, A);
 }
 
@@ -533,4 +532,27 @@ int LeVocabulario(FILE *ArqComprimido, TipoVetorPalavra Vocabulario){
         strcpy(Vocabulario[i], Palavra);
     }
     return NumNodosFolhas;
+}
+
+char *Trim(char *str) {
+    int i = 0, j, len;
+    char * strtmp = malloc(sizeof(char) * strlen(str) + 1);
+    strcpy(strtmp, str);
+    len = strlen(strtmp);
+    while((i < len) && ((strtmp[i] == ' ') || (strtmp[i] == '\t') ||
+                        /*(strtmp[i] == '\n') ||*/ (strtmp[i] == '\r')))
+        i++;
+    j = len - 1;
+    while((j >= 0) && ((strtmp[j] == ' ') || (strtmp[j] == '\t') ||
+                       /*(strtmp[i] == '\n') ||*/ (strtmp[i] == '\r')))
+        j--;
+
+    if (j >= 0) str[j + 1] = '\0';
+    if (i <= j)
+    {
+        memmove(strtmp, strtmp + i, strlen(strtmp + i)+1);
+        //strcpy(strtmp, strtmp + i);
+    }
+    else strcpy(strtmp, "");
+    return strtmp;
 }

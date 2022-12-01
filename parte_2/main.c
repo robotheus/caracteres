@@ -3,6 +3,7 @@
 #include <string.h>
 #include "file.h"
 #include "bmh.h"
+#include "compressao.h"
 
 #define MAX_TEXTO 5000
 #define MAX_PALAVRA 50
@@ -22,7 +23,7 @@ void main(int argc, char *argv[]){ //./tp3 2 texto.txt padrao.txt
         if(escolha == 1){
             BMH(texto, strlen(texto), padrao, strlen(padrao));
         } else if (escolha == 2){
-            
+            bmh_compressao();
         }
     }
     
