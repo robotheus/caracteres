@@ -28,21 +28,6 @@ void read_file_text(char *palavra, char *texto){
     //printf("%s\n", texto);
 }
 
-int read_file_text2(char *texto){
-    int y;
-    strcpy(texto, "\0");
-    
-    y = fscanf(fileInput1, "%s", texto);
-    //if(texto[strlen(texto)-1] == ',' || texto[strlen(texto)-1] == '.') texto[strlen(texto)-1] = 0;
-    
-    if(y != EOF) return 1;
-    else {
-        rewind(fileInput1);
-        return 0;
-    }
-    //printf("%s\n", texto);
-}
-
 int read_file_pattern(char *padrao){
     int x;
     strcpy(padrao, "\0");

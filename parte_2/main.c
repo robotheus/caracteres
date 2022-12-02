@@ -18,12 +18,12 @@ void main(int argc, char *argv[]){ //./tp3 2 texto.txt padrao.txt
     char *padrao = malloc(MAX_PADRAO * sizeof(char)); //Maior padrao a ser buscado: 30 caracteres
 
     if (escolha == 1) read_file_text(palavra, texto);
-
+    
     while(read_file_pattern(padrao)){
         if(escolha == 1){
             BMH(texto, strlen(texto), padrao, strlen(padrao));
         } else if (escolha == 2){
-            bmh_compressao();
+            bmh_compressao(padrao);
         }
     }
     

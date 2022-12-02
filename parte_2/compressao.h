@@ -1,73 +1,39 @@
-#define BaseNum 128
-#define MaxAlfabeto 255
-#define MaxTamVetoresBO 10
-#define TRUE 1
+#define VAZIO           "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+#define RETIRADO        "***********************************"
+
+#define M 67001
+#define N 35   /* Tamanho da chave */
+#define BASENUM 128  /* Base numerica que o algoritmo trabalha */
+#define MAXALFABETO 255 /* Constante usada em ExtraiProximaPalavra */
+#define MAXTAMVETORESDO  10
+#define TRUE  1
 #define FALSE 0
-#define MaxTamTexto 1000
-#define MaxTamPadrao 10
-#define Maxchar 256
-#define NumMaxErros 10
-#define n 35
-#define M 68000
-#define Vazio "!!!!!!!!!!"
-#define Retirado "**********"
+#define MAXTAMTEXTO     100000
+#define MAXTAMPADRAO    10
+#define MAXCHAR         256
 
-typedef unsigned int Apontador;
-typedef unsigned int TipoFreq;
-typedef unsigned int TipoOrdem;
-typedef unsigned char TipoChave[n];
-typedef unsigned TipoPesos[n];
-typedef unsigned int Indice;
-
-typedef struct TipoItem{
-    TipoChave Chave;
-    TipoFreq Freq;
-    TipoOrdem Ordem;
+typedef char TipoTexto[MAXTAMTEXTO + 1];
+typedef char TipoPadrao[MAXTAMPADRAO + 1];
+typedef int TipoApontador;
+typedef char TipoChave[N+1];
+typedef int TipoPesos[N + 1];
+typedef struct TipoItem {
+  TipoChave Chave;
+  /* outros componentes */
+  int Freq, Ordem;
 } TipoItem;
-
-typedef TipoItem TipoDicionario[M];
-typedef char TipoTexto[MaxTamTexto];
-typedef char TipoPadrao[MaxTamPadrao];
-typedef short TipoAlfabeto[MaxAlfabeto + 1];
-
-typedef struct TipoBaseOfSet{
-    int Base, Offset;
-} TipoBaseOfSet;
-
-typedef TipoBaseOfSet TipoVetoresBO[MaxTamVetoresBO + 1];
+typedef int TipoIndice;
+//typedef TipoItem TipoDicionario[M + 1];
+typedef TipoItem* TipoDicionario;
+typedef short TipoAlfabeto[MAXALFABETO + 1];
+typedef struct TipoBaseOffset {
+  int Base, Offset;
+} TipoBaseOffset;
+typedef TipoBaseOffset* TipoVetoresBO;
 typedef char TipoPalavra[256];
-typedef TipoPalavra TipoVetorPalavra[M + 1];
-typedef unsigned char TipoChave[n];
-typedef int ChaveTipo;
+typedef TipoPalavra* TipoVetorPalavra;
+//typedef TipoBaseOffset TipoVetoresBO[MAXTAMVETORESDO + 1];
+//typedef TipoPalavra TipoVetorPalavra[M + 1];
 
-typedef struct Item{
-    ChaveTipo Chave;
-} Item;
 
-void bmh_compressao();
-void Compressao(FILE *, FILE *, FILE *);
-void DefineAlfabeto(TipoAlfabeto, FILE *);
-void GeraPesos(TipoPesos);
-Indice h(TipoChave, TipoPesos);
-void Inicializa(TipoDicionario);
-Apontador Pesquisa(TipoChave, TipoPesos, TipoDicionario);
-void Insere(TipoItem, TipoPesos, TipoDicionario);
-void Particao(Indice, Indice, Indice *, Indice *, TipoDicionario);
-void Ordena(Indice, Indice, TipoDicionario);
-void QuickSort(TipoDicionario, Indice *);
-void PrimeiraEtapa(FILE *, TipoAlfabeto, int *, TipoPalavra, char *, TipoDicionario, TipoPesos);
-int SegundaEtapa(TipoDicionario, TipoVetoresBO, TipoPesos, FILE *);
-void TerceiraEtapa(FILE *, TipoAlfabeto , int *, TipoPalavra, char *, TipoDicionario, TipoPesos, TipoVetoresBO, FILE *, int);
-void CalculaCompCodigo(TipoDicionario, int);
-int Codifica(TipoVetoresBO, int, int *, int);
-int ConstroiVetores(TipoVetoresBO, TipoDicionario, int, FILE *);
-int LeNumInt(FILE *);
-void GravaNumInt(FILE *, int);
-Indice OrdenaPorFrequencia(TipoDicionario);
-void Escreve(FILE *, int *, int *);
-int LeVetores(FILE *, TipoBaseOfSet *);
-void ExtraiProximaPalavra(TipoPalavra, int *, char *, FILE *, TipoAlfabeto);
-void Busca(FILE *, FILE *);
-void Atribui(TipoPadrao, int, int);
-int LeVocabulario(FILE *, TipoVetorPalavra);
-char *Trim(char *str);
+int bmh_compressao();
