@@ -5,9 +5,6 @@
 
 void dinamica(char *texto, char *padrao, int erros, int *posicao, int *inicio){
     int x = 0;
-
-    
-
     while(read_file_text2(texto, posicao, inicio)){
         if(x < 1) {
             printf("%s", padrao);
