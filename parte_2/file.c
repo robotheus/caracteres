@@ -18,14 +18,12 @@ void read_file_text(char *palavra, char *texto){
     strcpy(palavra, "\0");
 
     while (fscanf(fileInput1, "%s", palavra) != EOF){
-        //if(palavra[strlen(palavra)-1] == ',' || palavra[strlen(palavra)-1] == '.') palavra[strlen(palavra)-1] = 0;
         strcat(texto, palavra);
         strcat(texto, " ");
         strcpy(palavra, "\0");
     }
 
     strcat(texto, "\0");
-    //printf("%s\n", texto);
 }
 
 int read_file_pattern(char *padrao){
