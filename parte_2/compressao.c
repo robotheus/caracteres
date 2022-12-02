@@ -30,7 +30,7 @@ void bmh_c(TipoTexto T, int n, TipoPadrao P, int m)
       j--;
     }
     if (j == 0)
-      printf("%3d  ", k + 1);
+      printf("%3d", k + 1);
     i += d[T[i] + 128];
   }
 
@@ -61,7 +61,7 @@ void Busca(FILE *ArqComprimido, FILE *ArqAlf)
     n++;
   while (read_file_pattern(palavra_padrao))
   {
-    printf("%s ", palavra_padrao);
+    printf("%s", palavra_padrao);
     strcpy(p, palavra_padrao);
     for (Ind = 1; Ind <= NumNodosFolhas; Ind++)
     {
@@ -262,10 +262,10 @@ char *Trim(char *str)
   strcpy(strtmp, str);
   len = strlen(strtmp);
 
-  while ((i < len) && ((strtmp[i] == ' ') || (strtmp[i] == '\t') || (strtmp[i] == '\r') || (strtmp[i] == ',') || (strtmp[i] == '.')))
+  while ((i < len) && ((strtmp[i] == ' ') || (strtmp[i] == '\t') || (strtmp[i] == '\r')))
     i++;
   j = len - 1;
-  while ((j >= 0) && ((strtmp[j] == ' ') || (strtmp[j] == '\t') || (strtmp[i] == '\r') || (strtmp[i] == ',') || (strtmp[i] == '.')))
+  while ((j >= 0) && ((strtmp[j] == ' ') || (strtmp[j] == '\t') || (strtmp[i] == '\r')))
     j--;
 
   if (j >= 0)
