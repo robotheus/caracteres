@@ -1,15 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h>
+#include <time.h>
+#include <sys/time.h>
 #include "file.h"
 
 FILE *fileInput1, *fileInput2, *fileOutput;
 
-void open_file(char argv1[], char argv2[]){
+void open_file(char argv1[], char argv2[], int escolha){
     fileInput1 = fopen(argv1, "r");
     fileInput2 = fopen(argv2, "r");
-    fileOutput = fopen("saida.txt", "w");
+    if(escolha == 1) fileOutput = fopen("dinamica.out", "w");
+    else if(escolha == 2) fileOutput = fopen("shiftand.out", "w");
+    else printf("ESCOLHA INCORRETA.\n");
 
     if(fileInput1 == NULL || fileInput2 == NULL) printf("ERRO AO ABRIR O ARQUIVO.\n");
 }
@@ -19,14 +22,12 @@ void read_file_text(char *palavra, char *texto){
     strcpy(palavra, "\0");
 
     while (fscanf(fileInput1, "%s", palavra) != EOF){
-        //if(palavra[strlen(palavra)-1] == ',' || palavra[strlen(palavra)-1] == '.') palavra[strlen(palavra)-1] = 0;
         strcat(texto, palavra);
         strcat(texto, " ");
         strcpy(palavra, "\0");
     }
 
     strcat(texto, "\0");
-    //printf("%s\n", texto);
 }
 
 int read_file_text2(char *texto, int *posicao, int *inicio){
@@ -79,6 +80,18 @@ void close_file(){
     fclose(fileOutput);
 }
 
-void output(char c){
-    fprintf(fileOutput, "%c\n", c);
+void output1(){
+    fprintf(fileOutput, "\n");
+}
+
+void output2(char *s){
+    fprintf(fileOutput, "%s  ", s);
+}
+
+void output3(long d){
+    fprintf(fileOutput, "%ld  ", d);
+}
+
+double time_diff(struct timeval *start, struct timeval *end){
+    return (end->tv_sec - start->tv_sec) + 1e-6*(end->tv_usec - start->tv_usec);
 }

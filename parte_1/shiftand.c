@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <string.h> 
 #include "shiftand.h"
+#include "file.h"
 
 void ShiftAndAproximado(char *texto, long n, char *padrao, long m, long k) {
-    printf("%s", padrao);
+    output2(padrao);
 
     long Masc[256], i, j, Ri, Rant, Rnovo;
     long R[11];
-    long cont = 0, anterior = -1;
-    long inicio, fim;
-
+    
     for(i = 0; i < 256; i++) Masc[i] = 0;
     for(i = 1; i <= m; i++) {Masc[padrao[i - 1] + 127] |= 1 << (m - i);}
 
@@ -30,14 +29,9 @@ void ShiftAndAproximado(char *texto, long n, char *padrao, long m, long k) {
         }
 
         if((Rnovo & 1) != 0) {
-            cont++;
-            fim = i + 1;
-            inicio = fim - strlen(padrao);
-        } else cont = 0;
-
-        if (cont != 0) {
-            printf("%3ld", inicio + 2);
+            if(k == 0) output3((i + 2) - strlen(padrao));
+            else output3((i + 1) - strlen(padrao));
         }
     }
-    printf("\n");
+    output1();
 }

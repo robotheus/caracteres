@@ -16,4 +16,4 @@ tp3p1: main.o file.o shiftand.o dinamica.o
 	gcc main.o file.o shiftand.o dinamica.o -o tp3p1
 
 clean:
-	rm -rf main.o file.o shiftand.o dinamica.o saida.txt tp3p1
+	rm -rf main.o file.o shiftand.o dinamica.o dinamica.out shiftand.out tp3p1
