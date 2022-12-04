@@ -7,11 +7,11 @@
 #include "shiftand.h"
 #include "dinamica.h"
 
-#define MAX_TEXTO 1000100
-#define MAX_PALAVRA 50
-#define MAX_PADRAO 50
+#define MAX_TEXTO 2000000
+#define MAX_PALAVRA 100
+#define MAX_PADRAO 100
 
-void main(int argc, char *argv[]){ //./tp3 2 texto.txt padrao.txt
+void main(int argc, char *argv[]){
     int escolha = atoi(argv[1]);
     int erros = atoi(argv[4]);
     
@@ -27,7 +27,7 @@ void main(int argc, char *argv[]){ //./tp3 2 texto.txt padrao.txt
     if (escolha == 2) read_file_text(palavra, texto);
     
     while(read_file_pattern(padrao)){
-        if(escolha == 1){
+        if(escolha == 1){   
             int *posicao, *inicio;
             posicao = malloc(sizeof(int));
             inicio = malloc(sizeof(int));

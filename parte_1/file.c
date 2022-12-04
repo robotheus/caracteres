@@ -21,9 +21,8 @@ void read_file_text(char *palavra, char *texto){
     strcpy(texto, "\0");
     strcpy(palavra, "\0");
 
-    while (fscanf(fileInput1, "%s", palavra) != EOF){
+    while(fgets(palavra, 100, fileInput1) != NULL){
         strcat(texto, palavra);
-        strcat(texto, " ");
         strcpy(palavra, "\0");
     }
 
@@ -36,9 +35,7 @@ int read_file_text2(char *texto, int *posicao, int *inicio){
     (*posicao)++; //referente ao espaço
 
     y = fscanf(fileInput1, "%s", texto);
-    for(int i = 0; i < strlen(texto); i++){
-        //printf("%d %c\n", texto[i], texto[i]);
-    }
+
     *inicio = *posicao;
 
     int caractere = 0;
