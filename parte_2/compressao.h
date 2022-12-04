@@ -1,15 +1,15 @@
 #define VAZIO           "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 #define RETIRADO        "***********************************"
 
-#define M 67001
-#define N 35   /* Tamanho da chave */
-#define BASENUM 128  /* Base numerica que o algoritmo trabalha */
-#define MAXALFABETO 255 /* Constante usada em ExtraiProximaPalavra */
+#define M 70000
+#define N 100   //Tamanho da chave
+#define BASENUM 128  //base numerica que o algoritmo trabalha
+#define MAXALFABETO 255 //Constante usada em ExtraiProximaPalavra
 #define MAXTAMVETORESDO  10
 #define TRUE  1
 #define FALSE 0
-#define MAXTAMTEXTO     100000
-#define MAXTAMPADRAO    10
+#define MAXTAMTEXTO     1000100
+#define MAXTAMPADRAO    50
 #define MAXCHAR         256
 
 typedef char TipoTexto[MAXTAMTEXTO + 1];
@@ -19,12 +19,10 @@ typedef char TipoChave[N+1];
 typedef int TipoPesos[N + 1];
 typedef struct TipoItem {
   TipoChave Chave;
-  /* outros componentes */
   int Freq, Ordem;
 } TipoItem;
 typedef int TipoIndice;
-//typedef TipoItem TipoDicionario[M + 1];
-typedef TipoItem* TipoDicionario;
+typedef TipoItem *TipoDicionario;
 typedef short TipoAlfabeto[MAXALFABETO + 1];
 typedef struct TipoBaseOffset {
   int Base, Offset;
@@ -32,13 +30,11 @@ typedef struct TipoBaseOffset {
 typedef TipoBaseOffset* TipoVetoresBO;
 typedef char TipoPalavra[256];
 typedef TipoPalavra* TipoVetorPalavra;
-//typedef TipoBaseOffset TipoVetoresBO[MAXTAMVETORESDO + 1];
-//typedef TipoPalavra TipoVetorPalavra[M + 1];
 
-
+void buscar(char *comprimido);
+void comprime(char *texto, char *comprimido);
 void bmh_c(TipoTexto T, int n, TipoPadrao P, int m);
 void Busca(FILE *ArqComprimido, FILE *ArqAlf);
-void bmh_compressao(char *texto, char *padrao, char *comprimido);
 void GeraPesos(TipoPesos p);
 TipoIndice h(TipoChave Chave, TipoPesos p);
 void Inicializa(TipoDicionario T);

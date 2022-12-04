@@ -3,43 +3,40 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
+#include <sys/time.h>
 #include "compressao.h"
 #include "file.h"
-#include "auxiliares.h"
 
-/*Procedimentos para fazer busca*/
+
 void bmh_c(TipoTexto T, int n, TipoPadrao P, int m)
 {
   int i, j, k, d[MAXCHAR + 1];
 
-  /*-- Pre-processamento do padrao --*/
-  for (j = 0; j <= MAXCHAR; j++)
-    d[j] = m;
-  for (j = 1; j <= m - 1; j++)
-    d[P[j] + 128] = m - j;
+  //calcula os deslocamentos
+  for (j = 0; j <= MAXCHAR; j++) d[j] = m;
+  for (j = 1; j <= m - 1; j++) d[P[j] + 128] = m - j;
   i = m;
 
-  while (i <= n)
-  {
-    /*-- Pesquisa --*/
+  while (i <= n){
+    //pesquisa
     k = i;
     j = m;
-    while (T[k] == P[j] && j > 0)
-    {
+    while (T[k] == P[j] && j > 0){
       k--;
       j--;
     }
-    if (j == 0)
-      printf("%3d", k + 1);
+    if (j == 0) output3(k + 1);
     i += d[T[i] + 128];
   }
-
-  printf("\n");
+  output1();
 }
 
 void Busca(FILE *ArqComprimido, FILE *ArqAlf)
-{
-  char *palavra_padrao = malloc(50 * sizeof(char));
+{ 
+  char *palavra_padrao;
+  palavra_padrao = malloc(50 * sizeof(char));
+
   TipoAlfabeto Alfabeto;
   int Ind, Codigo, MaxCompCod;
   TipoVetorPalavra Vocabulario = (TipoVetorPalavra)calloc(M + 1, sizeof(TipoPalavra));
@@ -57,11 +54,14 @@ void Busca(FILE *ArqComprimido, FILE *ArqAlf)
   MaxCompCod = LeVetores(ArqComprimido, VetoresBaseOffset);
   NumNodosFolhas = LeVocabulario(ArqComprimido, Vocabulario);
 
-  while (fread(&T[n], sizeof(char), 1, ArqComprimido))
-    n++;
+  while (fread(&T[n], sizeof(char), 1, ArqComprimido)) n++;
+  
+  struct timeval start, end;
+  double time = 0.0;
+
   while (read_file_pattern(palavra_padrao))
   {
-    printf("%s", palavra_padrao);
+    output2(palavra_padrao);
     strcpy(p, palavra_padrao);
     for (Ind = 1; Ind <= NumNodosFolhas; Ind++)
     {
@@ -74,58 +74,71 @@ void Busca(FILE *ArqComprimido, FILE *ArqAlf)
 
     if (Ind == NumNodosFolhas + 1)
     {
-      printf("\n");
+      output1();
       //printf("Padrao:%s nao encontrado\n", p);
       continue;
     }
 
     Codigo = Codifica(VetoresBaseOffset, Ord, &c, MaxCompCod);
     Atribui(Padrao, Codigo, c);
+
+    gettimeofday(&start, NULL);
     bmh_c(T, n, Padrao, c);
+    gettimeofday(&end, NULL);
+    time += time_diff(&start, &end);
   }
 
+  printf("Tempo BMH em arquivo comprimido: %.10lf sec.\n", time);
   free(Vocabulario);
   free(VetoresBaseOffset);
   free(palavra_padrao);
 }
 
-void bmh_compressao(char *texto, char *padrao, char *comprimido)
-{
-  FILE *ArqTxt = NULL, *ArqAlf = NULL, *ArqComprimido = NULL, *ArqPadrao = NULL;
-  TipoPalavra NomeArqTxt, NomeArqAlf, NomeArqComp, Opcao, NomeArqPadrao;
+void buscar(char *comprimido){
+  FILE *ArqComprimido = NULL, *ArqAlf = NULL;
+  TipoPalavra NomeArqPadrao, NomeArqAlf, NomeArqComp;;
+
+  strcpy(NomeArqAlf, "alfabeto.txt");
+  ArqAlf = fopen(NomeArqAlf, "r");
+  
+  strcpy(NomeArqComp, comprimido);
+  ArqComprimido = fopen(NomeArqComp, "r+b");
+  
+  Busca(ArqComprimido, ArqAlf);
+  
+  fclose(ArqComprimido);
+  ArqComprimido = NULL;
+  fclose(ArqAlf);
+  ArqAlf = NULL;
+}
+
+void comprime(char *texto, char *comprimido){
+  FILE *ArqTxt = NULL, *ArqAlf = NULL, *ArqComprimido = NULL;
+  TipoPalavra NomeArqTxt, NomeArqAlf, NomeArqComp;
 
   strcpy(NomeArqAlf, "alfabeto.txt");
   ArqAlf = fopen(NomeArqAlf, "r");
 
   strcpy(NomeArqTxt, texto);
-  strcpy(NomeArqComp, comprimido);
-  strcpy(NomeArqPadrao, padrao);
-
   ArqTxt = fopen(NomeArqTxt, "r");
+  
+  strcpy(NomeArqComp, comprimido);
   ArqComprimido = fopen(NomeArqComp, "w+b");
-  ArqPadrao = fopen(NomeArqPadrao, "r");
-
+  
   Compressao(ArqTxt, ArqAlf, ArqComprimido);
+  
   fclose(ArqTxt);
   ArqTxt = NULL;
-  fclose(ArqComprimido);
-  ArqComprimido = NULL;
-
-  strcpy(NomeArqComp, comprimido);
-  ArqComprimido = fopen(NomeArqComp, "r+b");
-  Busca(ArqComprimido, ArqAlf);
-
-  fclose(ArqComprimido);
   fclose(ArqAlf);
   ArqAlf = NULL;
+  fclose(ArqComprimido);
   ArqComprimido = NULL;
+
 }
 
 void GeraPesos(TipoPesos p)
 {
-  int i;
-  for (i = 0; i < N; i++)
-    p[i] = 1 + (unsigned int)rand();
+  for (int i = 0; i < N; i++) p[i] = 1 + (unsigned int)rand();
 }
 
 TipoIndice h(TipoChave Chave, TipoPesos p)
@@ -182,16 +195,6 @@ void Insere(TipoItem *x, TipoPesos p, TipoDicionario T)
     printf(" Tabela cheia\n");
 }
 
-void Retira(TipoChave Ch, TipoPesos p, TipoDicionario T)
-{
-  TipoIndice i;
-  i = Pesquisa(Ch, p, T);
-  if (i < M)
-    memcpy(T[i].Chave, RETIRADO, N);
-  else
-    printf("Registro nao esta presente\n");
-}
-
 /* Inicio dos procedimentos do Extrator */
 void DefineAlfabeto(TipoAlfabeto Alfabeto, FILE *ArqAlf)
 {
@@ -245,8 +248,7 @@ void ExtraiProximaPalavra(TipoPalavra Result, int *TipoIndice, char *Linha, FILE
       }
       else
       {
-        sprintf(Result + strlen(Result), "%c",
-                Linha[*TipoIndice - 1]);
+        sprintf(Result + strlen(Result), "%c", Linha[*TipoIndice - 1]);
       }
       FimPalavra = TRUE;
     }
@@ -257,7 +259,7 @@ void ExtraiProximaPalavra(TipoPalavra Result, int *TipoIndice, char *Linha, FILE
 char *Trim(char *str)
 {
   int i = 0, j, len;
-  char *strtmp = malloc(sizeof(char) * strlen(str) + 1);
+  char *strtmp = malloc(sizeof(char) * strlen(str) + 1); //lembrar do free
 
   strcpy(strtmp, str);
   len = strlen(strtmp);
@@ -301,7 +303,7 @@ void PrimeiraEtapa(FILE *ArqTxt, TipoAlfabeto Alfabeto, int *TipoIndice, TipoPal
         ExtraiProximaPalavra(Palavra, TipoIndice, Linha, ArqTxt, Alfabeto);
         memcpy(Elemento.Chave, Palavra, sizeof(TipoChave));
         /* O primeiro espaco depois da palavra nao e codificado */
-        if (PalavraTrim != NULL)
+        //if (PalavraTrim != NULL) //here
           free(PalavraTrim);
         PalavraTrim = Trim(Palavra);
         if (strcmp(PalavraTrim, "") && (*PalavraTrim) != (char)0)
@@ -314,8 +316,7 @@ void PrimeiraEtapa(FILE *ArqTxt, TipoAlfabeto Alfabeto, int *TipoIndice, TipoPal
         }
       } while (strcmp(Palavra, ""));
 
-      if (PalavraTrim != NULL)
-        free(PalavraTrim);
+      if (PalavraTrim != NULL) free(PalavraTrim); //here
     }
   } while (Palavra[0] != '\0');
 }
@@ -623,8 +624,8 @@ void TerceiraEtapa(FILE *ArqTxt, TipoAlfabeto Alfabeto, int *TipoIndice, TipoPal
           Escreve(ArqComprimido, &Codigo, &c);
         }
 
-        if (strcmp(PalavraTrim, ""))
-          free(PalavraTrim);
+        //if (strcmp(PalavraTrim, ""))
+          free(PalavraTrim); //here
       } while (strcmp(Palavra, ""));
     }
   } while (*Palavra != '\0');

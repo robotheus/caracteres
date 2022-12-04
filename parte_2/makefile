@@ -16,4 +16,4 @@ tp3p2: main.o file.o bmh.o compressao.o
 	gcc main.o file.o bmh.o compressao.o -o tp3p2 -lm
 
 clean:
-	rm -rf main.o file.o bmh.o compressao.o saida.txt comprimido tp3p2
+	rm -rf main.o file.o bmh.o compressao.o huffman.out BMH.out comprimido tp3p2

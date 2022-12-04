@@ -2,22 +2,27 @@
 #include <stdlib.h>
 #include <string.h>
 #include "file.h"
+#include <sys/time.h>
+#include <time.h>
 
 FILE *fileInput1, *fileInput2, *fileOutput;
 
-void open_file(char argv1[], char argv2[]){
+void open_file(char argv1[], char argv2[], int escolha){
     fileInput1 = fopen(argv1, "r");
     fileInput2 = fopen(argv2, "r");
-    fileOutput = fopen("saida.txt", "w");
+    
+    if(escolha == 1) fileOutput = fopen("BMH.out", "w");
+    else if(escolha == 2) fileOutput = fopen("huffman.out", "w");
+    else printf("ESCOLHA INCORRETA.\n");
 
-    if(fileInput1 == NULL || fileInput2 == NULL) printf("ERRO AO ABRIR O ARQUIVO.\n");
+    //if(fileInput1 == NULL || fileInput2 == NULL) printf("ERRO AO ABRIR O ARQUIVO.\n");
 }
 
 void read_file_text(char *palavra, char *texto){
     strcpy(texto, "\0");
     strcpy(palavra, "\0");
 
-    while (fscanf(fileInput1, "%s", palavra) != EOF){
+    while(fscanf(fileInput1, "%s", palavra) != EOF){
         strcat(texto, palavra);
         strcat(texto, " ");
         strcpy(palavra, "\0");
@@ -31,7 +36,7 @@ int read_file_pattern(char *padrao){
     strcpy(padrao, "\0");
 
     x = fscanf(fileInput2, "%s", padrao);
-
+    
     if(x != EOF) return 1;
     else return 0;        
 }
@@ -42,6 +47,18 @@ void close_file(){
     fclose(fileOutput);
 }
 
-/*void output(int habilidade){
-    fprintf(fileOutput, "%d ", habilidade);
-}*/
+void output1(){
+    fprintf(fileOutput, "\n");
+}
+
+void output2(char *s){
+    fprintf(fileOutput, "%s  ", s);
+}
+
+void output3(long d){
+    fprintf(fileOutput, "%ld  ", d);
+}
+
+double time_diff(struct timeval *start, struct timeval *end){
+    return (end->tv_sec - start->tv_sec) + 1e-6*(end->tv_usec - start->tv_usec);
+}
