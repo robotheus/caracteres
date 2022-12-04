@@ -7,7 +7,7 @@
 #include "bmh.h"
 #include "compressao.h"
 
-#define MAX_TEXTO 100000
+#define MAX_TEXTO 2000000
 #define MAX_PALAVRA 100
 #define MAX_PADRAO 100
 
@@ -32,7 +32,7 @@ void main(int argc, char *argv[]){
             time += time_diff(&start, &end);
         }
 
-        printf("Tempo BMH: %.10lf sec.\n", time);
+        printf("Tempo BMH em arquivo nao comprimido: %.10lf sec.\n", time);
         free(palavra);
         free(texto);
         free(padrao);

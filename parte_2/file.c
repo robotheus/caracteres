@@ -15,16 +15,15 @@ void open_file(char argv1[], char argv2[], int escolha){
     else if(escolha == 2) fileOutput = fopen("huffman.out", "w");
     else printf("ESCOLHA INCORRETA.\n");
 
-    //if(fileInput1 == NULL || fileInput2 == NULL) printf("ERRO AO ABRIR O ARQUIVO.\n");
+    if(fileInput1 == NULL || fileInput2 == NULL) printf("ERRO AO ABRIR O ARQUIVO.\n");
 }
 
 void read_file_text(char *palavra, char *texto){
     strcpy(texto, "\0");
     strcpy(palavra, "\0");
 
-    while(fscanf(fileInput1, "%s", palavra) != EOF){
+    while(fgets(palavra, 100, fileInput1) != NULL){
         strcat(texto, palavra);
-        strcat(texto, " ");
         strcpy(palavra, "\0");
     }
 
