@@ -62,12 +62,9 @@ int read_file_text2(char *texto, int *posicao, int *inicio){
 }
 
 int read_file_pattern(char *padrao){
-    int x;
     strcpy(padrao, "\0");
 
-    x = fscanf(fileInput2, "%s", padrao);
-
-    if(x != EOF) return 1;
+    if(fgets(padrao, 100, fileInput2) != NULL) return 1;
     else return 0;        
 }
 

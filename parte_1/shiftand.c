@@ -3,7 +3,7 @@
 #include "shiftand.h"
 #include "file.h"
 
-void ShiftAndAproximado(char *texto, long n, char *padrao, long m, long k) {
+void ShiftAndAproximado(char *texto, long n, char *padrao, long m, long k, int *comparacoes) {
     output2(padrao);
 
     long Masc[256], i, j, Ri, Rant, Rnovo;
@@ -18,6 +18,7 @@ void ShiftAndAproximado(char *texto, long n, char *padrao, long m, long k) {
     for(j = 1; j <= k; j++) R[j] = (1 << (m - j)) | R[j - 1];
 
     for(i = 0; i < n; i++) {
+        *comparacoes = (*comparacoes) + k + 1;
         Rant = R[0];
         Rnovo = ((((unsigned long)Rant) >> 1) | Ri) & Masc[texto[i] + 127];
         R[0] = Rnovo;

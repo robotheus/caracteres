@@ -1,1 +1,1 @@
-void ShiftAndAproximado(char *, long, char *, long, long);
+void ShiftAndAproximado(char *, long, char *, long, long, int *);
