@@ -1,18 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "file.h"
-#include <sys/time.h>
 #include <time.h>
+#include <sys/time.h>
+#include "file.h"
 
 FILE *fileInput1, *fileInput2, *fileOutput;
 
 void open_file(char argv1[], char argv2[], int escolha){
     fileInput1 = fopen(argv1, "r");
     fileInput2 = fopen(argv2, "r");
-    
-    if(escolha == 1) fileOutput = fopen("BMH.out", "w");
-    else if(escolha == 2) fileOutput = fopen("huffman.out", "w");
+    if(escolha == 1) fileOutput = fopen("dinamica.out", "w");
+    else if(escolha == 2) fileOutput = fopen("shiftand.out", "w");
     else printf("ESCOLHA INCORRETA.\n");
 
     if(fileInput1 == NULL || fileInput2 == NULL) printf("ERRO AO ABRIR O ARQUIVO.\n");
@@ -30,13 +29,42 @@ void read_file_text(char *palavra, char *texto){
     strcat(texto, "\0");
 }
 
+int read_file_text2(char *texto, int *posicao, int *inicio){
+    int y;
+    strcpy(texto, "\0");
+    (*posicao)++; //referente ao espaço
+
+    y = fscanf(fileInput1, "%s", texto);
+
+    *inicio = *posicao;
+
+    int caractere = 0;
+    for (int j = 0; j < strlen(texto); j++) {
+        caractere = texto[j];
+        if (caractere < 0) {
+            (*posicao)--;
+            break;
+        }
+    }
+
+    caractere = texto[strlen(texto) - 1];
+
+    if(caractere >= 33 && caractere <= 47) {
+        texto[strlen(texto) - 1] = 0;
+        (*posicao)++; //referente ao ponto ou virgula
+    }
+
+    if(y != EOF) return 1;
+    else {
+        rewind(fileInput1);
+        return 0;
+    }
+}
+
 int read_file_pattern(char *padrao){
-    int x;
     strcpy(padrao, "\0");
 
-    x = fscanf(fileInput2, "%s", padrao);
-    
-    if(x != EOF) return 1;
+    if(fgets(padrao, 100, fileInput2) != NULL) return 1;
     else return 0;        
 }
 

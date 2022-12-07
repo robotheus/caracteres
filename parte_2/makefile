@@ -1,4 +1,4 @@
-all: tp3p2
+all: tp3p1
 
 file.o: file.h file.c
 	gcc -c file.c
@@ -6,14 +6,14 @@ file.o: file.h file.c
 main.o: main.c
 	gcc -c main.c
 
-bmh.o: bmh.h bmh.c
-	gcc -c bmh.c
+shiftand.o: shiftand.h shiftand.c
+	gcc -c shiftand.c
 
-compressao.o: compressao.h compressao.c
-	gcc -c compressao.c -lm
+dinamica.o: dinamica.h dinamica.c
+	gcc -c dinamica.c
 
-tp3p2: main.o file.o bmh.o compressao.o
-	gcc main.o file.o bmh.o compressao.o -o tp3p2 -lm
+tp3p1: main.o file.o shiftand.o dinamica.o
+	gcc main.o file.o shiftand.o dinamica.o -o tp3p1
 
 clean:
-	rm -rf main.o file.o bmh.o compressao.o huffman.out BMH.out comprimido tp3p2
+	rm -rf main.o file.o shiftand.o dinamica.o dinamica.out shiftand.out tp3p1
