@@ -1,1 +1,0 @@
-void BMH(char *, long, char *, long);
